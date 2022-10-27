@@ -1,6 +1,6 @@
 # ConnectRN exercise built with [Next.js](https://nextjs.org/), [chakra-ui](https://github.com/chakra-ui/chakra-ui), and [TypeScript](https://www.typescriptlang.org/)
 
-![gif of app usage](https://res.cloudinary.com/crbaucom/image/upload/v1666837505/videos/connectrn-exercise-save-shifts.gif)
+![gif of app usage](connectrn-exercise-save-shifts.gif)
 
 ## How to use
 
