@@ -1,0 +1,12 @@
+{
+	"editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.formatOnSave": false,
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#1F2A59",
+    "titleBar.activeBackground": "#2B3B7C",
+    "titleBar.activeForeground": "#FAFAFD"
+  }
+}
