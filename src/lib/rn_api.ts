@@ -144,3 +144,29 @@ export async function getShifts(): Promise<Shift[]> {
     })),
   ]
 }
+
+export async function assignShift(
+  shift: Shift,
+  nurse: Nurse
+): Promise<Response> {
+  const response = await fetchPlus(
+    `/shifts/${shift.id}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        nurseID: nurse.id,
+      }),
+    },
+    MAX_RETRIES
+  )
+    .then((res) => res.json())
+    .catch((error) => {
+      console.error('Error saving data', error)
+      throw error
+    })
+
+  return response
+}
