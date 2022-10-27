@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { format, parse } from 'date-fns'
 import { RequestInit } from 'next/dist/server/web/spec-extension/request'
 
 export interface Nurse {
@@ -22,6 +22,67 @@ export interface Shift {
 
 export const SERVER_API_URL = 'http://localhost:9001/'
 const MAX_RETRIES = 5
+
+const nurseCertifications = [
+  {
+    value: 'CNA',
+    rank: 1,
+  },
+  {
+    value: 'LPN',
+    rank: 2,
+  },
+  {
+    value: 'RN',
+    rank: 3,
+  },
+]
+
+function getRank(certification) {
+  const cert = nurseCertifications.find((cert) => cert.value === certification)
+  return cert.rank
+}
+
+export function isNurseQualified(nurse, certification) {
+  return getRank(nurse.qualification) >= getRank(certification)
+}
+
+export function isNurseAvailable(nurseID, startTime, endTime, shifts) {
+  const startDate = parse(startTime, 'M/d/yyyy pp', new Date())
+  const endDate = parse(endTime, 'M/d/yyyy pp', new Date())
+
+  if (endDate < startDate) {
+    endDate.setDate(endDate.getDate() + 1)
+  }
+  // Check if the nurse is already assigned to a shift
+  let isAvailable = true
+  shifts.forEach((shift) => {
+    if (shift.nurse_id === nurseID) {
+      const shiftStartDate = parse(shift.start, 'M/d/yyyy pp', new Date())
+      const shiftEndDate = parse(shift.end, 'M/d/yyyy pp', new Date())
+      if (shiftEndDate < shiftStartDate) {
+        shiftEndDate.setDate(shiftEndDate.getDate() + 1)
+      }
+
+      // Check if the nurse is available for the shift
+      if (startDate > shiftStartDate && startDate < shiftEndDate) {
+        isAvailable = false
+      }
+      if (endDate > shiftStartDate && endDate < shiftEndDate) {
+        isAvailable = false
+      }
+
+      if (startDate < shiftStartDate && endDate > shiftEndDate) {
+        isAvailable = false
+      }
+
+      if (startDate > shiftStartDate && endDate < shiftEndDate) {
+        isAvailable = false
+      }
+    }
+  })
+  return isAvailable
+}
 
 function fetchPlus(
   url: string,
